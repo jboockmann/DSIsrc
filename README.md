@@ -9,53 +9,20 @@ The following installation procedure requires [Ubuntu 14.04 LTS (Trusty Tahr)](h
 
 `sh -c "$(wget https://raw.githubusercontent.com/uniba-swt/DSIsrc/master/install.sh -O -)"`
 
-Consult the step-by-step installation instructions below in case of a problem occuring during the basic installation.
-
-## Step-by-step Installation
-
-1. Install dependencies via apt:  
-`$ sudo apt-get install wget git openjdk-7-jre openjdk-7-jdk ocaml ocaml-findlib`
-
-2. Clone the DSIsrc and DSIlogger repository:  
-`$ mkdir DSI`  
-`$ git clone https://github.com/uniba-swt/DSIsrc.git DSI/`  
-`$ git clone https://github.com/uniba-swt/DSIlogger.git DSI/`
-
-3. Install and setup the C Intermediate Language (CIL) required for instrumenting C source code:
-  1. Download CIL (version 1.7.3) from [GitHub](https://github.com/cil-project/cil/releases) and extract the archive:  
-  `wget https://github.com/cil-project/cil/archive/cil-1.7.3.zip`
-  3. Setup a new symlink in the `src/ext` folder of CIL called `instrument.ml`, which points to `path/to/DSIsrc/resources/cil-inst/instrument.ml`:  
-  `ln -s path/to/DSIsrc/resources/cil-inst/instrument.ml /path/to/CIL/src/ext`
-  4. Add `Instrument.feature;` to `let features : C.featureDescr list = ...` in file `/path/to/CIL/src/main.ml`:
-  ```
-  let features : C.featureDescr list = 
-  [ Epicenter.feature;
-  ....
-  Instrument.feature;
-  ] 
-  @ Feature_config.features 
-   ```
-  5. Configure and compile CIL by running the following commands within CIL's root directory:  
-  `$ ./configure; `  
-  `$ make`  
-  `$ make test`
-  TODO: better use a symlink for CILLY_BIN instead of an env var
-  6. Export the path to the `cilly` script, which is located at `/path/to/CIL/bin/cilly`, under the environment name `CILLY_BIN`; this environment variable is used by the makefiles in the test program folder of DSIsrc:  
-  `CILLY_BIN=/path/to/CIL/bin/cilly; export CILLY_BIN`
-
-TODO: setup a SBT buildfile
-TODO: provide information on how to build the project
+Consult the comments in the file [install.sh](install.sh) in case of a problem occuring during the basic installation.
 
 
 ### Setting up the Eclipse environment
 Download and extract Eclipse for Scala (version 3.0.4):  
 `$ wget http://downloads.typesafe.com/scalaide-pack/3.0.4.vfinal-211-20140421/scala-SDK-3.0.4-2.11-2.11-linux.gtk.x86_64.tar.gz; tar -xf scala-SDK-3.0.4-2.11-2.11-linux.gtk.x86_64.tar.gz`
 
-Run Eclipse and import the projects DSIsrc and DSIlogger via the Eclipse import dialogue `Project > Import > General > Existing Projects into Workspace`. Each required library should be listed in the Build Path, and the Project References should already have been established.
+Run Eclipse and import the projects DSIsrc and DSIlogger via the Eclipse import dialogue `Project > Import > General > Existing Projects into Workspace`. If necessary, download missing libraries and add these to the Build Path (consult (this README.MD)[resources/libs/README.MD] for further information). Project References should already be setup.
 
 
 ## Running an example using DSIsrc
-TODO: also provide a brief guide for running an example using the previous built executable
+
+[//]: # (provide a brief guide for running an example using the built executable)
+
 To run an example, use Eclipse and the provided launch configurations located in `/path/to/DSIsrc/resources/eclipse-run-configurations`.
 Install CIL as described above in order to run user provided examples from scratch, and consult the makefiles from the supplied examples to create a proper makefile target.
 Note that the source file containing the example program must be instrumented, compiled, and executed using CIL.
@@ -97,7 +64,6 @@ If logging is enabled in the source code, DSIsrc/bin will generate the following
 | log/mmbg | Contains the folded strand graphs annotated with data structure labels and evidences representing the structural repetition.|
 | log/agg | Contains the final result for each entry pointer, i.e., the aggregated strand graph with the highest ranked label on top.|
 
-TODO: move this to a better section
 An aggregated strand graph is generated for each entry pointer and encoded as a `dot` file.
 In most cases, the aggregated strand graph for the longest running entry pointer is of interest, which can be found and opened with the command `$ rm graph_[^c]*;grep aggCnt * | sed -e 's/^.*ep: //' -e 's/ start.*aggCnt: /,/' -e 's/<.*//' | sort -t, -nk2 | tail -n 1 | sed -e s'/\([0-9]\+\).*/*x_\1.dot/'| xargs find . -name | xargs xdot`.
 
