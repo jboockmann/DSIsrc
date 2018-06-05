@@ -4,12 +4,9 @@ This project contains the DSIsrc front-end component and its DSIcore algorithm i
 
 
 ## Basic Installation
+DSIsrc is shipped as a [Docker](https://www.docker.com/) container. First, clone this repository and navigate inside and run `docker build -t dsisrc .`. Then use `docker run -v "$(pwd)":/root/ -it /bin/bash dsimachine` to spawn a new container with `/root` pointing to your current working directory. Finally, use the interactive bash shell to trigger the DSIsrc toolchain.
 
-The following installation procedure requires [Ubuntu 14.04 LTS (Trusty Tahr)](http://releases.ubuntu.com/14.04/). DSIsrc is installed in the current working directory by running the following command in your terminal. (Note: `wget` is required).
-
-`sh -c "$(wget https://raw.githubusercontent.com/uniba-swt/DSIsrc/master/install.sh -O -)"`
-
-Consult the comments in the file [install.sh](install.sh) in case of a problem occuring during the basic installation.
+Consult the instructions and comments in the [Dockerfile](Dockerfile) to setup DSIsrc on your host machine directly.
 
 
 ### Setting up the Eclipse environment
